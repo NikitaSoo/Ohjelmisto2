@@ -1,29 +1,33 @@
-from flask import Flask, request
+from flask import Flask, jsonify
 import json
 
 app = Flask(__name__)
+
 @app.route('/alkuluku/<luku>')
 def alkuluku(luku):
     try:
-
-        #Muutetaan kokonaisluvuksi
+        # Muutetaan luku kokonaisluvuksi
         luku = int(luku)
 
-        #Testataan onko luku kokonaisluku
-        onko_alkuluku = True
-        jakaja = 2
-        while jakaja < (luku // 2):
-            if luku % jakaja == 0:
-
-                onko_alkuluku = False
-                break
-            jakaja += 1
+        # Testataan onko luku alkuluku
+        if luku < 2:
+            onko_alkuluku = False
+        else:
+            onko_alkuluku = True
+            jakaja = 2
+            while jakaja <= (luku // 2):
+                if luku % jakaja == 0:
+                    onko_alkuluku = False
+                    break
+                jakaja += 1
 
         tilakoodi = 200
         vastaus = {
-            "Number": 31,
+            "Number": luku,  # Muutettu dynaamiseksi
             "isPrime": onko_alkuluku
         }
+
+        return jsonify(vastaus), tilakoodi
 
     except:
         tilakoodi = 400
@@ -31,7 +35,7 @@ def alkuluku(luku):
             "status": tilakoodi,
             "Teksti": "Virheellinen parametri"
         }
-
+        return jsonify(vastaus), tilakoodi
 
 
 if __name__ == '__main__':
